@@ -1,2 +1,2 @@
 # Bet
-An interactions.py extension to create bots that organize compotitions and provide betting experience in a specified Discord channel.
+An interactions.py extension to create bots that organize competitions and provide betting experience within user specified Discord channel.
