@@ -201,18 +201,18 @@ class ControlPanel:
             await modal_ctx.send('请输入整数。', delete_after=5, ephemeral=True)
 
     def calculate_odds(self):
+        total_bet_per_thread = {}
         total_bet = 0
+    
+        # 计算每个文章的总投注金额
         for aParticipant in self.all_participants:
-            for aThread in aParticipant.bet_choices:
-                if aThread not in self.all_bets_vs_thread_id:
-                    self.all_bets_vs_thread_id[aThread] = aParticipant.bet_choices[aThread]
-                    total_bet += aParticipant.bet_choices[aThread]
-                elif aThread in self.all_bets_vs_thread_id:
-                    self.all_bets_vs_thread_id[aThread] += aParticipant.bet_choices[aThread]
-                    total_bet += aParticipant.bet_choices[aThread]
-
-        for aThread in self.all_bets_vs_thread_id:
-            self.all_odds_vs_thread_id[aThread] = total_bet / self.all_bets_vs_thread_id[aThread]
+            for aThread, bet_amount in aParticipant.bet_choices.items():
+                total_bet_per_thread[aThread] = total_bet_per_thread.get(aThread, 0) + bet_amount
+                total_bet += bet_amount
+    
+        # 计算每个文章的赔率
+        for thread_id, bet_amount in total_bet_per_thread.items():
+            self.all_odds_vs_thread_id[thread_id] = total_bet / bet_amount if bet_amount != 0 else 1
 
     def distribute_bet_rewards(self, winner_article_thread_id: int):
         winner_odd = self.all_odds_vs_thread_id[winner_article_thread_id]
